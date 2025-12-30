@@ -1,4 +1,4 @@
-package app
+package api
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	"github.com/zainiazhr14/go-api/app/handler"
-	"github.com/zainiazhr14/go-api/app/model"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/zainiazhr14/go-api/api/handler"
 	"github.com/zainiazhr14/go-api/config"
 )
 
@@ -20,20 +20,20 @@ type App struct {
 
 // Initialize initializes the app with predefined configuration
 func (a *App) Initialize(config *config.Config) {
-	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True",
-		config.DB.Username,
-		config.DB.Password,
+	dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta",
 		config.DB.Host,
-		config.DB.Port,
+		config.DB.User,
+		config.DB.Password,
 		config.DB.Name,
-		config.DB.Charset)
+		config.DB.Port,
+	)
 
 	db, err := gorm.Open(config.DB.Dialect, dbURI)
 	if err != nil {
 		log.Fatal("Could not connect database")
 	}
 
-	a.DB = model.DBMigrate(db)
+	a.DB = db
 	a.Router = mux.NewRouter()
 	a.setRouters()
 }

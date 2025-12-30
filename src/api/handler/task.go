@@ -1,4 +1,4 @@
-package handler
+package handler;
 
 import (
 	"encoding/json"
@@ -7,7 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	"github.com/zainiazhr14/go-api/app/model"
+	"github.com/zainiazhr14/go-api/domain/model"
+	"github.com/zainiazhr14/go-api/pkg/response"
 )
 
 func GetAllTasks(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -21,10 +22,10 @@ func GetAllTasks(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 	tasks := []model.Task{}
 	if err := db.Model(&project).Related(&tasks).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		response.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, tasks)
+	response.RespondJSON(w, http.StatusOK, tasks)
 }
 
 func CreateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -40,16 +41,16 @@ func CreateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&task); err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
+		response.RespondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
 
 	if err := db.Save(&task).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		response.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusCreated, task)
+	response.RespondJSON(w, http.StatusCreated, task)
 }
 
 func GetTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -66,7 +67,7 @@ func GetTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	if task == nil {
 		return
 	}
-	respondJSON(w, http.StatusOK, task)
+	response.RespondJSON(w, http.StatusOK, task)
 }
 
 func UpdateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -86,16 +87,16 @@ func UpdateTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&task); err != nil {
-		respondError(w, http.StatusBadRequest, err.Error())
+		response.RespondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	defer r.Body.Close()
 
 	if err := db.Save(&task).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		response.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, task)
+	response.RespondJSON(w, http.StatusOK, task)
 }
 
 func DeleteTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -114,10 +115,10 @@ func DeleteTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := db.Delete(&project).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		response.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusNoContent, nil)
+	response.RespondJSON(w, http.StatusNoContent, nil)
 }
 
 func CompleteTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -137,10 +138,10 @@ func CompleteTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 	task.Complete()
 	if err := db.Save(&task).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		response.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, task)
+	response.RespondJSON(w, http.StatusOK, task)
 }
 
 func UndoTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
@@ -160,18 +161,20 @@ func UndoTask(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 
 	task.Undo()
 	if err := db.Save(&task).Error; err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
+		response.RespondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, task)
+	response.RespondJSON(w, http.StatusOK, task)
 }
 
 // getTaskOr404 gets a task instance if exists, or respond the 404 error otherwise
 func getTaskOr404(db *gorm.DB, id int, w http.ResponseWriter, r *http.Request) *model.Task {
 	task := model.Task{}
 	if err := db.First(&task, id).Error; err != nil {
-		respondError(w, http.StatusNotFound, err.Error())
+		response.RespondError(w, http.StatusNotFound, err.Error())
 		return nil
 	}
 	return &task
 }
+
+
