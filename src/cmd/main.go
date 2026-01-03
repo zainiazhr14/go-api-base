@@ -16,6 +16,8 @@ func main() {
 
 	app := &api.App{}
 	app.Initialize(&config)
-	app.Run(":3000")
-}
 
+	log.Printf("Starting %s on port %s\n", config.AppName, config.Port)
+
+	app.Run(":" + config.Port)
+}
