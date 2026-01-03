@@ -14,7 +14,7 @@ type RouteGroup struct {
 	cfg    *config.Config
 }
 
-type DBHandler func(db *gorm.DB, w http.ResponseWriter, r *http.Request)
+type DBHandler func(w http.ResponseWriter, r *http.Request)
 
 func InitRoutes(root *mux.Router, db *gorm.DB, cfg *config.Config) {
 	api := &RouteGroup{router: root, DB: db}
@@ -33,7 +33,7 @@ func (g *RouteGroup) Group(prefix string) *RouteGroup {
 
 func (g *RouteGroup) handle(h DBHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		h(g.DB, w, r)
+		h(w, r)
 	}
 }
 
