@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	Port	string `mapstructure:"PORT"`
-	AppName		string	`mapstructure:"APP_NAME"`
-	
-	DB DatabaseConfig `mapstructure:db`
+	Port           string `mapstructure:"PORT"`
+	AppName        string `mapstructure:"APP_NAME"`
+	PasetoLocalKey string `mapstructure:"PASETO_V4_LOCAL_KEY"`
+
+	DB DatabaseConfig `mapstructure:"db"`
 }
 
 type DatabaseConfig struct {
@@ -20,7 +21,7 @@ type DatabaseConfig struct {
 	Port     string `mapstructure:"port"`
 	User     string `mapstructure:"user"`
 	Password string `mapstructure:"password"`
-	Name     string `mapstructure:"name"` 
+	Name     string `mapstructure:"name"`
 	Charset  string `mapstructure:"charset"`
 }
 
@@ -44,4 +45,3 @@ func LoadConfig() (config Config, err error) {
 	err = viper.Unmarshal(&config)
 	return
 }
-

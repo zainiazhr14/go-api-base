@@ -5,7 +5,6 @@ import (
 	"net/http"
 )
 
-// respondJSON makes the response with payload as json format
 func RespondJSON(w http.ResponseWriter, status int, payload interface{}) {
 	response, err := json.Marshal(payload)
 	if err != nil {
@@ -18,8 +17,6 @@ func RespondJSON(w http.ResponseWriter, status int, payload interface{}) {
 	w.Write([]byte(response))
 }
 
-// respondError makes the error response with payload as json format
 func RespondError(w http.ResponseWriter, code int, message string) {
 	RespondJSON(w, code, map[string]string{"error": message})
 }
-

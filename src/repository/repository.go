@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type Repository[T any] struct {
 	db *gorm.DB

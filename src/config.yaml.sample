@@ -1,5 +1,4 @@
 port: "4090"
-paseto_v4_local_key: ""
 db:
   dialect: "postgres"
   host: "localhost"

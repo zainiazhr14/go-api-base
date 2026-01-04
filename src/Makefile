@@ -4,8 +4,11 @@ DB_DRIVER=postgres
 DB_DSN=postgres://postgres:Qwe123@@@localhost:5432/go-api-base?sslmode=disable
 MIGRATIONS_DIR=./migrations
 
-.PHONY: status up down reset create
+.PHONY: status up down reset create run
 
+run:
+	wgo run cmd/main.go
+	
 status:
 	goose -dir $(MIGRATIONS_DIR) $(DB_DRIVER) "$(DB_DSN)" status
 

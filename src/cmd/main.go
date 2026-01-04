@@ -19,5 +19,5 @@ func main() {
 
 	log.Printf("Starting %s on port %s\n", config.AppName, config.Port)
 
-	app.Run(":" + config.Port)
+	app.Run("127.0.0.1:" + config.Port)
 }

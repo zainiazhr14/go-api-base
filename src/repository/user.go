@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/jinzhu/gorm"
 	"github.com/zainiazhr14/go-api/domain/model"
 )
@@ -9,14 +12,20 @@ type UserRepository struct {
 	*Repository[model.User]
 }
 
-func NewUserRepository() *UserRepository {
-	return &UserRepository{}
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{
+		&Repository[model.User]{db},
+	}
 }
 
-func (r *UserRepository) FindByEmail(db *gorm.DB, email string) (*model.User, error) {
+func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	var user model.User
 
-	err := db.Where("email = ?", email).First(&user).Error
+	email = strings.TrimSpace(strings.ToLower(email))
+
+	fmt.Println(email)
+
+	err := r.db.Where("email = ?", email).First(&user).Error
 
 	return &user, err
 }

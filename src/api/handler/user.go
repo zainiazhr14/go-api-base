@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/gorm"
 	"github.com/zainiazhr14/go-api/config"
-	"github.com/zainiazhr14/go-api/pkg/response"
 	"github.com/zainiazhr14/go-api/usecase"
 )
 
@@ -13,6 +13,8 @@ type UserHandler struct {
 	cfg         *config.Config
 	userUsecase *usecase.UserUsecase
 }
+
+var validate = validator.New()
 
 func NewUserHandler(cfg *config.Config, db *gorm.DB) *UserHandler {
 	userUsecase := usecase.NewUserUsecase(cfg, db)
@@ -23,14 +25,6 @@ func NewUserHandler(cfg *config.Config, db *gorm.DB) *UserHandler {
 	}
 }
 
-func (h *UserHandler) LoginWithEmail(w http.ResponseWriter, r *http.Request) {
-	user, err := h.userUsecase.LoginByEmail(r, "test@mailinator.com", "123")
+func (h *UserHandler) GetMe(w http.ResponseWriter, r *http.Request) {
 
-	if err != nil { 
-		response.RespondError(w, 400, err.Error())
-		return
-	}
-
-	response.RespondJSON(w, 200, user)
 }
-

@@ -17,17 +17,19 @@ type RouteGroup struct {
 type DBHandler func(w http.ResponseWriter, r *http.Request)
 
 func InitRoutes(root *mux.Router, db *gorm.DB, cfg *config.Config) {
-	api := &RouteGroup{router: root, DB: db}
+	api := &RouteGroup{router: root, DB: db, cfg: cfg}
 
 	v1 := api.Group("/api/v1")
 
 	RegisterUserRoutes(v1)
+	RegisterAuthRoutes(v1)
 }
 
 func (g *RouteGroup) Group(prefix string) *RouteGroup {
 	return &RouteGroup{
 		router: g.router.PathPrefix(prefix).Subrouter(),
 		DB:     g.DB,
+		cfg:    g.cfg,
 	}
 }
 
