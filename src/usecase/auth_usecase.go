@@ -2,13 +2,12 @@ package usecase
 
 import (
 	"errors"
-	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/zainiazhr14/go-api/config"
 	"github.com/zainiazhr14/go-api/domain/model"
-	"github.com/zainiazhr14/go-api/repository"
+	"github.com/zainiazhr14/go-api/domain/repository"
 )
 
 type AuthUsecase struct {
@@ -27,7 +26,7 @@ func NewAuthUsecase(cfg *config.Config, db *gorm.DB) *AuthUsecase {
 	}
 }
 
-func (u *AuthUsecase) LoginByEmail(r *http.Request, email string, password string) (*model.User, error) {
+func (u *AuthUsecase) LoginByEmail(email string, password string) (*model.User, error) {
 	user, err := u.userRepository.FindByEmail(email)
 
 	if err != nil {
@@ -37,12 +36,12 @@ func (u *AuthUsecase) LoginByEmail(r *http.Request, email string, password strin
 	return user, nil
 }
 
-func (u *AuthUsecase) RegisterUser(r *http.Request, user *model.User) error {
+func (u *AuthUsecase) RegisterUser(user *model.User) error {
 	foundUser, err := u.userRepository.FindByEmail(user.Email)
 
 	if err == nil && foundUser.Id != uuid.Nil {
 		return errors.New("Email already registered")
 	}
 
-	return u.userRepository.Create(u.db, user)
+	return u.userRepository.Create(user)
 }

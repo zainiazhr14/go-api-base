@@ -37,7 +37,7 @@ func (h *AuthHandler) LoginWithEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.authUsecase.LoginByEmail(r, req.Email, req.Password)
+	user, err := h.authUsecase.LoginByEmail(req.Email, req.Password)
 	if err != nil {
 		response.RespondError(w, 400, err.Error())
 		return
@@ -68,7 +68,7 @@ func (h *AuthHandler) RegisterWithEmail(w http.ResponseWriter, r *http.Request) 
 		Name:     req.Name,
 	}
 
-	err := h.authUsecase.RegisterUser(r, user)
+	err := h.authUsecase.RegisterUser(user)
 
 	if err != nil {
 		response.RespondError(w, 400, err.Error())
